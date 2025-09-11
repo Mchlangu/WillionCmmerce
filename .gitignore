@@ -1,0 +1,20 @@
+# === Spring Boot ===
+target/
+*.log
+*.class
+*.jar
+*.war
+*.iml
+.mvn/
+!src/main/resources/
+
+# === Angular ===
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# === OS/IDE ===
+.DS_Store
+.idea/
+.vscode/
+*.swp
