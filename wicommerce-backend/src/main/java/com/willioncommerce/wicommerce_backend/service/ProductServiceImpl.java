@@ -53,10 +53,6 @@ public class ProductServiceImpl implements ProductService {
         Product updatedProduct = mapper.toEntity(dto);
         updatedProduct.setId(id);
 
-        if (updatedProduct.getStockQuantity() == null) {
-            updatedProduct.setStockQuantity(0);
-        }
-
         updatedProduct = repository.save(updatedProduct);
         return mapper.toDto(updatedProduct);
     }
