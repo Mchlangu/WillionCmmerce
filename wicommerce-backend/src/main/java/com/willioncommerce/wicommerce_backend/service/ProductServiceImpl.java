@@ -2,6 +2,7 @@ package com.willioncommerce.wicommerce_backend.service;
 
 import com.willioncommerce.wicommerce_backend.dto.ProductDto;
 import com.willioncommerce.wicommerce_backend.entity.Product;
+import com.willioncommerce.wicommerce_backend.exception.ResourceNotFoundException;
 import com.willioncommerce.wicommerce_backend.mapper.ProductMapper;
 import com.willioncommerce.wicommerce_backend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDto updateProduct(Long id, ProductDto dto) {
         Product existingProduct = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         Product updatedProduct = mapper.toEntity(dto);
         updatedProduct.setId(id);
@@ -62,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new ResourceNotFoundException("Product not found with id: " + id);
         }
         repository.deleteById(id);
     }

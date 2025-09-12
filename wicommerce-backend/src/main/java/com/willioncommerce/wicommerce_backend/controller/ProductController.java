@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,20 +20,14 @@ public class ProductController {
 
     @PostMapping("/add")
     public ResponseEntity<ProductDto> create(@RequestBody @Valid ProductDto dto) {
-        return ResponseEntity.ok(productService.createProduct(dto));
+        ProductDto created = productService.createProduct(dto);
+        return ResponseEntity.created(URI.create("/api/products/" + created.getId())).body(created);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ProductDto> update(@PathVariable Long id, @RequestBody @Valid ProductDto dto) {
-        try {
-            ProductDto updated = productService.updateProduct(id, dto);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return ResponseEntity.notFound().build();
-            }
-            throw e;
-        }
+        ProductDto updated = productService.updateProduct(id, dto);
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/{id}")
@@ -49,14 +44,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        try {
-            productService.deleteProduct(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return ResponseEntity.notFound().build();
-            }
-            throw e;
-        }
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }
