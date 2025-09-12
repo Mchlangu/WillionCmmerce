@@ -5,6 +5,8 @@ import com.willioncommerce.wicommerce_backend.entity.Product;
 import com.willioncommerce.wicommerce_backend.exception.ResourceNotFoundException;
 import com.willioncommerce.wicommerce_backend.mapper.ProductMapper;
 import com.willioncommerce.wicommerce_backend.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -30,10 +32,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
-        return repository.findAll().stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<ProductDto> getAllProducts(Pageable pageable) {
+        Page<Product> productPage = repository.findAll(pageable);
+        return productPage.map(mapper::toDto);
     }
 
     @Override

@@ -1,13 +1,16 @@
 package com.willioncommerce.wicommerce_backend.controller;
 
+import com.willioncommerce.wicommerce_backend.dto.PageResponse;
 import com.willioncommerce.wicommerce_backend.dto.ProductDto;
 import com.willioncommerce.wicommerce_backend.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -38,8 +41,10 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDto>> getAll() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<PageResponse<ProductDto>> getAll(
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        PageResponse<ProductDto> response = new PageResponse<>(productService.getAllProducts(pageable));
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
